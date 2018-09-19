@@ -1,13 +1,13 @@
-function parseDatesMatch( groupFields ){
-  let allDatesMatch = []
+function parseStages( groupFields ){
+  let allStages = []
 
   for( let i=0; i<groupFields.length; i++)
-    allDatesMatch.push( parseDateMatch(groupFields[i]) )
-  return allDatesMatch
+    allStages.push( parseStage(groupFields[i]) )
+  return allStages
 }
 
-function parseDateMatch( fields ){
-  let dateMatch = {
+function parseStage( fields ){
+  let stage = {
     name: fields[0],
     matches: []
   }
@@ -16,38 +16,38 @@ function parseDateMatch( fields ){
 
     let _match = {}
     let finished = fields[j].split(' ')[0] === 'Fin'
-    let localField = fields[j+1]
-    let visitantField = fields[j+2]
+    let homeField = fields[j+1]
+    let visitField = fields[j+2]
 
     if(finished){
       _match={
         schedule: parseSchedule(fields[j], finished),
-        local: {
-          name: localField.slice(localField.indexOf(' ')+1),
-          goals: parseInt(localField.split(' ')[0])
+        home: {
+          name: homeField.slice(homeField.indexOf(' ')+1),
+          goals: parseInt(homeField.split(' ')[0])
         },
-        visitant: {
-          name: visitantField.slice(visitantField.indexOf(' ')+1),
-          goals: parseInt(visitantField.split(' ')[0])
+        visit: {
+          name: visitField.slice(visitField.indexOf(' ')+1),
+          goals: parseInt(visitField.split(' ')[0])
         },
         state: 'Finished'
       }
     } else {
       _match={
         schedule: parseSchedule(fields[j], finished),
-        local: {
-          name: localField
+        home: {
+          name: homeField
         },
-        visitant: {
-          name: visitantField
+        visit: {
+          name: visitField
         },
         state: 'Pending'
       }
     }
     console.log(_match);
-    dateMatch.matches.push(_match)
+    stage.matches.push(_match)
   }
-  return dateMatch
+  return stage
 }
 
 function parseSchedule(scheduleField, finished){
@@ -65,7 +65,7 @@ function parseSchedule(scheduleField, finished){
 }
 
 module.exports = {
-  parseDatesMatch,
-  parseDateMatch,
+  parseStages,
+  parseStage,
   parseSchedule,
 }
