@@ -3,7 +3,7 @@ const parser = require('./parser')
 const utils = require('./utils')
 const fs = require('fs')
 
-const url = 'https://www.google.com.ar/search?q=copa+libertadores'
+const url = 'https://www.google.com.ar/search?q=liga+argentina'
 
 puppeteer.launch({ headless: true }).then(async browser => {
   console.log("\n################ GETTING RESULTS TEST ################\n")
@@ -35,18 +35,18 @@ puppeteer.launch({ headless: true }).then(async browser => {
   await utils.timeout(1000)
   await page.screenshot({path: 'example.png'});
 
-  const datesMatch = await getAllDatesMatch(page)
+  const stages = await getAllStages(page)
 
-  datesMatch.forEach( (date, index)=>{
+  stages.forEach( (date, index)=>{
       if(!date[0].includes('Jornada'))
-        datesMatch[index-1].push(...date)
+        stages[index-1].push(...date)
   })
 
-  // console.log(datesMatch.filter( el => el[0].includes('Jornada') ));
-  let allDatesMatch = parser.parseDatesMatch( datesMatch.filter( el => el[0].includes('Jornada') ) )
-  console.log(allDatesMatch);
+  // console.log(stages.filter( el => el[0].includes('Jornada') ));
+  let allStages = parser.parseStages( stages.filter( el => el[0].includes('Jornada') ) )
+  console.log(allStages);
 
-  //fs.writeFileSync('./node/super_liga.json', JSON.stringify(allDatesMatch))
+  //fs.writeFileSync('./node/super_liga.json', JSON.stringify(allStages))
 
   await browser.close()
 
@@ -55,10 +55,10 @@ puppeteer.launch({ headless: true }).then(async browser => {
   process.exit(1)
 })
 
-function getAllDatesMatch(page){
+function getAllStages(page){
   return page.evaluate(() => [...document.querySelectorAll('.OcbAbf')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
 }
 
-function getDateMatch(page){
+function getStage(page){
   return page.evaluate(() => [document.querySelector('jsl')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
 }
