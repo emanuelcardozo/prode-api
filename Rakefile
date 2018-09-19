@@ -4,3 +4,9 @@
 require_relative 'config/application'
 
 Rails.application.load_tasks
+
+require 'fileutils'
+
+task :get_data do
+  sh %{ node ./node/getData.js }
+end
