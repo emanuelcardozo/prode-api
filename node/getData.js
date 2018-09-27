@@ -19,6 +19,8 @@ puppeteer.launch({ headless: true }).then(async browser => {
   await utils.timeout(1000)
   await utils.scrollTo(page, 0)
   await utils.timeout(1000)
+  await utils.scrollTo(page, 0)
+  await utils.timeout(1000)
   await utils.scrollToEnd(page)
   await utils.timeout(1000)
   await utils.scrollToEnd(page)
@@ -42,11 +44,9 @@ puppeteer.launch({ headless: true }).then(async browser => {
         stages[index-1].push(...date)
   })
 
-  // console.log(stages.filter( el => el[0].includes('Jornada') ));
   let allStages = parser.parseStages( stages.filter( el => el[0].includes('Jornada') ) )
-  console.log(allStages);
 
-  //fs.writeFileSync('./node/super_liga.json', JSON.stringify(allStages))
+  fs.writeFileSync('./node/super_liga.json', JSON.stringify(allStages))
 
   await browser.close()
 
@@ -59,6 +59,6 @@ function getAllStages(page){
   return page.evaluate(() => [...document.querySelectorAll('.OcbAbf')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
 }
 
-function getStage(page){
-  return page.evaluate(() => [document.querySelector('jsl')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
-}
+// function getStage(page){
+//   return page.evaluate(() => [document.querySelector('jsl')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
+// }

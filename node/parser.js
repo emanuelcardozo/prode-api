@@ -17,7 +17,7 @@ function parseStage( fields ){
     let _match = {}
     let finished = fields[j].split(' ')[0] === 'Fin'
     let homeField = fields[j+1]
-    let visitField = fields[j+2]
+    let awayField = fields[j+2]
 
     if(finished){
       _match={
@@ -26,9 +26,9 @@ function parseStage( fields ){
           name: homeField.slice(homeField.indexOf(' ')+1),
           goals: parseInt(homeField.split(' ')[0])
         },
-        visit: {
-          name: visitField.slice(visitField.indexOf(' ')+1),
-          goals: parseInt(visitField.split(' ')[0])
+        away: {
+          name: awayField.slice(awayField.indexOf(' ')+1),
+          goals: parseInt(awayField.split(' ')[0])
         },
         state: 'Finished'
       }
@@ -38,13 +38,13 @@ function parseStage( fields ){
         home: {
           name: homeField
         },
-        visit: {
-          name: visitField
+        away: {
+          name: awayField
         },
         state: 'Pending'
       }
     }
-    console.log(_match);
+    // console.log(_match);
     stage.matches.push(_match)
   }
   return stage
