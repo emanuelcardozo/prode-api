@@ -6,7 +6,7 @@ const fs = require('fs')
 const url = 'https://www.google.com.ar/search?q=liga+argentina'
 
 puppeteer.launch({ headless: true }).then(async browser => {
-  console.log("\n################ GETTING RESULTS TEST ################\n")
+  console.log("\n################ GETTING TOURNAMENT ################\n")
 
   const page = await browser.newPage()
 
