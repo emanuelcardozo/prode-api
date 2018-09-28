@@ -11,6 +11,7 @@ task :get_data do
   sh %{ node ./node/getData.js }
 end
 
+desc 'Getting all teams from the typed league'
 task :load_team => :environment do
   sh %{ node ./node/getTeams.js }
   data = JSON.parse(File.read('node/teams.json'))

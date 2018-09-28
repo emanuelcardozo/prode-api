@@ -2,10 +2,6 @@
 
 one:
   name: MyString
-  logo: MyString
-  status: false
 
 two:
   name: MyString
-  logo: MyString
-  status: false

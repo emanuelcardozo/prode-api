@@ -3,10 +3,11 @@ const parser = require('./parser')
 const utils = require('./utils')
 const fs = require('fs')
 
-const url = 'https://www.google.com.ar/search?q=premier+league'
+const url = 'https://www.google.com.ar/search?q=posiciones+'
+const leagues = ['liga española', 'superliga argentina', 'premier league']
 
 puppeteer.launch({ headless: true }).then(async browser => {
-  console.log("\n################ GETTING RESULTS TEST ################\n")
+  console.log("\n################ GETTING TEAMS ################\n")
 
   const page = await browser.newPage()
 
@@ -17,7 +18,6 @@ puppeteer.launch({ headless: true }).then(async browser => {
   await utils.timeout(1000)
 
   let allTeams = await getTeams(page)
-  console.log(allTeams);
   fs.writeFileSync('./node/teams.json', JSON.stringify(allTeams))
 
   await browser.close()
@@ -28,10 +28,11 @@ puppeteer.launch({ headless: true }).then(async browser => {
 })
 
 function getTeams(page){
-  return page.evaluate(() => [...document.querySelectorAll('jsl')][2].innerHTML.split('class="imspo_mt__tr"').map( html => {
+  return page.evaluate(() => [...document.querySelectorAll('.str-dc.str-nhnc')].slice(5).map( el => {
+      const html = el.innerHTML
       return new Object({
-        name: html.slice(html.indexOf('="22">')+6).split('<')[0],
-        logo: html.slice(html.indexOf('ssl'), html.indexOf('" alt'))
+        name: el.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' '),
+        logo: html.slice(html.indexOf('ssl'), html.indexOf('" style'))
       })
-    }).slice(1,21))
+    }))
 }

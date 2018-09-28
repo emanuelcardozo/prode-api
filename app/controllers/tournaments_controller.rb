@@ -1,74 +1,29 @@
 class TournamentsController < ApplicationController
-  before_action :set_tournament, only: [:show, :edit, :update, :destroy]
 
-  # GET /tournaments
-  # GET /tournaments.json
   def index
-    @tournaments = Tournament.all
+    render :json => Tournament.all
   end
 
-  # GET /tournaments/1
-  # GET /tournaments/1.json
   def show
+    render :json => Tournament.find(params[:id])
   end
 
-  # GET /tournaments/new
-  def new
-    @tournament = Tournament.new
+  def teams
+    render :json => Tournament.find( params[:id] ).teams
   end
 
-  # GET /tournaments/1/edit
-  def edit
+  def stages
+    stages = get_stages params[:id]
+    render :json => stages.map{ |s| { name: s.name, matches: s.matches }}
   end
 
-  # POST /tournaments
-  # POST /tournaments.json
-  def create
-    @tournament = Tournament.new(tournament_params)
-
-    respond_to do |format|
-      if @tournament.save
-        format.html { redirect_to @tournament, notice: 'Tournament was successfully created.' }
-        format.json { render :show, status: :created, location: @tournament }
-      else
-        format.html { render :new }
-        format.json { render json: @tournament.errors, status: :unprocessable_entity }
-      end
-    end
+  def get_stages tournament_id
+    Tournament.find( tournament_id ).stages
   end
 
-  # PATCH/PUT /tournaments/1
-  # PATCH/PUT /tournaments/1.json
-  def update
-    respond_to do |format|
-      if @tournament.update(tournament_params)
-        format.html { redirect_to @tournament, notice: 'Tournament was successfully updated.' }
-        format.json { render :show, status: :ok, location: @tournament }
-      else
-        format.html { render :edit }
-        format.json { render json: @tournament.errors, status: :unprocessable_entity }
-      end
-    end
+  def stage
+    stages = get_stages params[:id]
+    render :json => {name: stages.first.name, matches: stages.first.matches}
   end
 
-  # DELETE /tournaments/1
-  # DELETE /tournaments/1.json
-  def destroy
-    @tournament.destroy
-    respond_to do |format|
-      format.html { redirect_to tournaments_url, notice: 'Tournament was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
-
-  private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_tournament
-      @tournament = Tournament.find(params[:id])
-    end
-
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def tournament_params
-      params.require(:tournament).permit(:name)
-    end
 end
