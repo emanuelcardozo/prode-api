@@ -39,12 +39,9 @@ puppeteer.launch({ headless: true }).then(async browser => {
 
   const stages = await getAllStages(page)
 
-  stages.forEach( (date, index)=>{
-      if(!date[0].includes('Jornada'))
-        stages[index-1].push(...date)
-  })
+  console.log(stages);
 
-  let allStages = parser.parseStages( stages.filter( el => el[0].includes('Jornada') ) )
+  let allStages = parser.parseStages( stages )
 
   fs.writeFileSync('./node/super_liga.json', JSON.stringify(allStages))
 
@@ -56,7 +53,18 @@ puppeteer.launch({ headless: true }).then(async browser => {
 })
 
 function getAllStages(page){
-  return page.evaluate(() => [...document.querySelectorAll('.OcbAbf')].map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')))
+   const promise = page.evaluate(() => [...document.querySelectorAll('.OcbAbf')])
+
+   return promise.then((stages) => {
+     console.log(stages);
+     stages.map(elem => elem.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  '))
+     stages.forEach( (date, index)=>{
+       if(!date[0].includes('Jornada')){
+         stages[index-1].push(...date)
+       }
+     })
+     return stages.filter( el => el[0].includes('Jornada'))
+   }, (error)=> console.log(error))
 }
 
 // function getStage(page){
