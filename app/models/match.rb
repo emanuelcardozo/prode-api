@@ -1,7 +1,7 @@
 class Match
   include Mongoid::Document
   field :state, type: String
-  field :date, type: Date
+  field :date, type: Time
   field :home_goals, type: Integer
   field :away_goals, type: Integer
 

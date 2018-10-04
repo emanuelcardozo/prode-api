@@ -1,11 +1,13 @@
 require 'fileutils'
 
 desc 'Getting all teams from the typed league'
-task :load_team => :environment do
+task :get_teams => :environment do
+  file_path = 'node/teams.json'
   sh %{ node ./node/getTeams.js }
-  data = JSON.parse(File.read('node/teams.json'))
-  data.each do |team|
-    team = Team.find_or_initialize_by( name: team["name"], logo: team["logo"])
-    team.save
+  teams = JSON.parse(File.read(file_path))
+  File.delete(file_path)
+  teams.each do |team|
+    new_team = Team.find_or_initialize_by( name: team["name"], logo: team["logo"])
+    new_team.save
   end
 end

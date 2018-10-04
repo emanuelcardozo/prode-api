@@ -15,13 +15,13 @@ function parseStage( fields ){
   for(let j=1; j<fields.length; j+=3){
 
     let _match = {}
-    let finished = fields[j].split(' ')[0] === 'Fin'
+    let hasGoals = fields[j].includes('Fin') || fields[j].includes('Suspendido')
     let homeField = fields[j+1]
     let awayField = fields[j+2]
 
-    if(finished){
+    if(hasGoals){
       _match={
-        schedule: parseSchedule(fields[j], finished),
+        schedule: parseSchedule(fields[j], hasGoals),
         home: {
           name: homeField.slice(homeField.indexOf(' ')+1),
           goals: parseInt(homeField.split(' ')[0])
@@ -30,18 +30,18 @@ function parseStage( fields ){
           name: awayField.slice(awayField.indexOf(' ')+1),
           goals: parseInt(awayField.split(' ')[0])
         },
-        state: 'Finished'
+        state: fields[j].includes('Fin')? 'Finished' : 'Suspended'
       }
     } else {
       _match={
-        schedule: parseSchedule(fields[j], finished),
+        schedule: parseSchedule(fields[j], hasGoals),
         home: {
           name: homeField
         },
         away: {
           name: awayField
         },
-        state: 'Pending'
+        state: fields[j].includes('Pospuesto')? 'Postponed' : 'Pending'
       }
     }
     // console.log(_match);
@@ -50,17 +50,18 @@ function parseStage( fields ){
   return stage
 }
 
-function parseSchedule(scheduleField, finished){
+function parseSchedule(scheduleField, hasGoals){
 
   const scheduleSplited = scheduleField.split('►')[0].trim().split(' ')
-  const index = finished ? 0 : 1
+  const index = hasGoals ? 0 : 1
   const length = scheduleSplited.length
-  const dateUndefined = scheduleSplited[1].includes("Por")
+  const dateUndefined = scheduleField.includes("Pospuesto")
+  const hourUndefined = scheduleField.includes("Por definirse")
 
   return {
-      dayOfWeek: finished && length===3 ? scheduleSplited[1] : null,
-      date: dateUndefined? scheduleSplited[0] : scheduleSplited[length-index-1],
-      hour: finished || dateUndefined ? null : scheduleSplited[2]
+      dayOfWeek: hasGoals && length===3 ? scheduleSplited[1] : null,
+      date: dateUndefined? null : hourUndefined ? scheduleSplited[0] : scheduleSplited[length-index-1],
+      hour: hasGoals || hourUndefined || dateUndefined ? null : scheduleSplited[2]
     }
 }
 
