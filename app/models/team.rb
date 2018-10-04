@@ -7,5 +7,5 @@ class Team
 
   has_many :matches, :inverse_of => :home
   has_many :matches, :inverse_of => :away
-  has_and_belongs_to_many :tournaments
+  # belongs_to :tournament
 end
