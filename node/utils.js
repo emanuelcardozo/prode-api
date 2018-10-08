@@ -19,8 +19,18 @@ function scrollToEnd(page){
   })
 }
 
+function prettify(text){
+  return text.trim().replace(/[\n\r]+|[\s]{2,}/g, ' ').split('  ')
+}
+
+function getNumberOfStage(stage, selector ){
+  return parseInt(stage.split(' ').slice(selector==='current'? -3 : -1)[0])
+}
+
 module.exports = {
   timeout,
   scrollTo,
-  scrollToEnd
+  scrollToEnd,
+  prettify,
+  getNumberOfStage,
 }

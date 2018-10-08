@@ -3,8 +3,8 @@ const parser = require('./parser')
 const utils = require('./utils')
 const fs = require('fs')
 
-const url = 'https://www.google.com.ar/search?q=posiciones+'
-const leagues = ['liga española', 'superliga argentina', 'premier league']
+const url = 'https://www.google.com.ar/search?q=posiciones+super_liga+argetina'
+// const leagues = ['liga española', 'superliga argentina', 'premier league']
 
 puppeteer.launch({ headless: true }).then(async browser => {
   console.log("\n################ GETTING TEAMS ################\n")
@@ -18,11 +18,16 @@ puppeteer.launch({ headless: true }).then(async browser => {
   await utils.timeout(1000)
 
   let allTeams = await getTeams(page)
+  console.log(allTeams);
+
+  console.log('################ PROCESS SUCCESSFUL ################')
+
   fs.writeFileSync('./node/teams.json', JSON.stringify(allTeams))
 
   await browser.close()
 
 }).catch(err => {
+  console.log('################ ERROR ################');
   console.log(err)
   process.exit(1)
 })
