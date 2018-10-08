@@ -6,7 +6,7 @@ class TournamentsController < ApplicationController
         id: t.id.to_s,
         name: t.name,
         country: t.country,
-        img: t.img
+        img: t.img,
         # number_of_teams: t.teams.count,
         number_of_stages: t.stages.count
       }
