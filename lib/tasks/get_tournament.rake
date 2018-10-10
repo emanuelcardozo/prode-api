@@ -10,11 +10,13 @@ task :get_tournament => :environment do
 
   tournament["stages"].each do |stage|
     matches = stage["matches"]
+    stages = matches.map{ |m| m["state"]}.uniq
 
     new_stage = Stage.find_or_create_by(
       name: stage["name"],
       tournament_id: new_tournament.id,
-      is_current: matches.map{ |m| m["state"]}.uniq.include?('Pending')
+      is_current: stages.include?('Pending'),
+      finished: stages.length === 1 && stages.include?('Finished')
     )
 
     matches.each do | match |
