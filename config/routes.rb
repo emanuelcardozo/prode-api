@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'tournaments/:id/teams', to: 'tournaments#teams'
   get 'tournaments/:id/stages', to: 'tournaments#stages'
   get 'tournaments/:id/stages/:stage_number', to: 'tournaments#stage'
+  get 'tournaments/:id/states', to: 'tournaments#states'
 
   get 'matches', to: 'matches#index'
   get 'matches/:id', to: 'matches#show'
