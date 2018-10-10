@@ -6,7 +6,7 @@ class TournamentsController < ApplicationController
         id: t.id.to_s,
         name: t.name,
         country: t.country,
-        img: t.img,
+        image: t.image,
         # number_of_teams: t.teams.count,
         number_of_stages: t.stages.count
       }
@@ -50,7 +50,13 @@ class TournamentsController < ApplicationController
   end
 
   def get_team_data team, goals
-    { name: team.name, logo: team.logo, goals: goals }
+    { name: team.name,
+      logo: {
+        small: team.logo["small"],
+        medium: team.logo["medium"],
+        large: team.logo["large"]
+      },
+      goals: goals }
   end
 
   def stage
