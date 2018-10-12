@@ -47,6 +47,7 @@ class TournamentsController < ApplicationController
 
   def get_matches_data matches
     matches.map do |match| {
+      id: match.id.to_s,
       home: get_team_data(match.home, match.home_goals),
       away: get_team_data(match.away, match.away_goals),
       date: match.date,
@@ -67,6 +68,10 @@ class TournamentsController < ApplicationController
   def stage
     stage = get_stages(params[:id])[params[:stage_number].to_i-1]
     render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
+  end
+
+  def tournament_params
+    params.permit(:id, :stage_number)
   end
 
 end
