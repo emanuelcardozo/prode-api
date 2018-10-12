@@ -35,9 +35,14 @@ puppeteer.launch({ headless: true }).then(async browser => {
 function getTeams(page){
   return page.evaluate(() => [...document.querySelectorAll('.str-dc.str-nhnc')].slice(5).map( el => {
       const html = el.innerHTML
+      const logoURL = html.slice(html.indexOf('//ssl'), html.indexOf('48x48'))
       return new Object({
         name: el.innerText.trim().replace(/[\n\r]+|[\s]{2,}/g, ' '),
-        logo: html.slice(html.indexOf('ssl'), html.indexOf('" style'))
+        logo: {
+          small: logoURL + "24x24.png",
+          medium: logoURL + "48x48.png",
+          large:  logoURL + "96x96.png",
+        }
       })
     }))
 }
