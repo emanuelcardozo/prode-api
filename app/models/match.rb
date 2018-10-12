@@ -9,4 +9,5 @@ class Match
   belongs_to :away, class_name: 'Team'
 
   belongs_to :stage
+  has_many :bets
 end
