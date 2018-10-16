@@ -8,12 +8,13 @@ task :get_tournament => :environment do
 
   next if new_tournament.stages.count > 0
 
-  tournament["stages"].each do |stage|
+  tournament["stages"].each_with_index do |stage, index|
     matches = stage["matches"]
     stages = matches.map{ |m| m["state"]}.uniq
 
     new_stage = Stage.find_or_create_by(
       name: stage["name"],
+      number_of_stage: index+1,
       tournament_id: new_tournament.id,
       is_current: stages.include?('Pending'),
       finished: stages.length === 1 && stages.include?('Finished')
@@ -27,7 +28,8 @@ task :get_tournament => :environment do
         away_goals: match["away"]["goals"],
         date: Time.now,
         state: match["state"],
-        stage_id: new_stage.id
+        stage_id: new_stage.id,
+        tournament_id: new_tournament.id
       )
     end
   end
