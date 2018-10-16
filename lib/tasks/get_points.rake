@@ -1,7 +1,7 @@
 desc 'Getting all points obteined for each user'
 
   task :get_points => :environment do
-  Match.where(points_recolected: false).to_a.map{ |match|
+  Match.where(points_recolected: false, state: "Finished").to_a.map{ |match|
     h_goals = match.home_goals
     a_goals = match.away_goals
 
@@ -9,9 +9,10 @@ desc 'Getting all points obteined for each user'
 
       guessed_home_goals = h_goals === bet.home_goals ? 1 : 0
       guessed_away_goals = a_goals === bet.away_goals ? 1 : 0
-      guessed_result = (guessed_away_goals & guessed_home_goals) != 0 ? 1 : 0
+      guessed_winner = h_goals >= a_goals && bet.home_goals >= bet.away_goals || h_goals < a_goals && bet.home_goals < bet.away_goals ? 1 : 0
+      # guessed_result = (guessed_away_goals & guessed_home_goals) != 0 ? 1 : 0
 
-      score = guessed_result + guessed_away_goals + guessed_home_goals
+      score = guessed_winner + guessed_away_goals + guessed_home_goals # + guessed_result
 
       point = Point.find_or_initialize_by(tournament_id: match.stage.tournament_id, user_id: bet.user_id)
       point.total += score
