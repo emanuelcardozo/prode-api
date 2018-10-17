@@ -55,15 +55,15 @@ function parseSchedule(scheduleField, hasGoals){
   const scheduleSplited = scheduleField.split('►')[0].trim().split(' ')
   const index = hasGoals ? 0 : 1
   const length = scheduleSplited.length
-  const dateUndefined = scheduleField.includes("Pospuesto")
+  const dateUndefined = scheduleField.includes("Pospuesto") || scheduleField.includes("Suspendido")
   const hourUndefined = scheduleField.includes("Por definirse")
 
   return {
-      dayOfWeek: hasGoals && length===3 ? scheduleSplited[1] : null,
-      date: dateUndefined? null : hourUndefined ? scheduleSplited[0] : scheduleSplited[length-index-1],
+      date: dateUndefined? null : hourUndefined ? scheduleSplited[0] : scheduleSplited[length-index-1]+'/'+(new Date).getFullYear(),
       hour: hasGoals || hourUndefined || dateUndefined ? null : scheduleSplited[2]
     }
 }
+// (!dateUndefined && hourUndefined? scheduleSplited[0] : scheduleSplited[length-index-1])+'/'+(new Date).getFullYear(),
 
 module.exports = {
   parseStages,

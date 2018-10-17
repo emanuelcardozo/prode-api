@@ -3,7 +3,7 @@ task :get_tournament => :environment do
   file_path = 'node/super_liga.json'
 
   tournament = JSON.parse(File.read(file_path))
-  File.delete(file_path)
+  # File.delete(file_path)
   new_tournament = Tournament.find_or_create_by(name: tournament["name"])
 
   next if new_tournament.stages.count > 0
@@ -21,12 +21,15 @@ task :get_tournament => :environment do
     )
 
     matches.each do | match |
+      hour = match["schedule"]["hour"]
+      date = match["schedule"]["date"]
+
       new_match = Match.find_or_create_by(
         home_id: Team.where(name: match["home"]["name"]).first.id,
         home_goals: match["home"]["goals"],
         away_id: Team.where(name: match["away"]["name"]).first.id,
         away_goals: match["away"]["goals"],
-        date: Time.now,
+        date: date ? DateTime.strptime(date +(hour ? ' '+hour : ''), '%d/%m/%Y'+(hour ? ' %H:%M' : '')) : nil,
         state: match["state"],
         stage_id: new_stage.id,
         tournament_id: new_tournament.id
