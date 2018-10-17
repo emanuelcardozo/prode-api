@@ -1,7 +1,8 @@
 class Match
   include Mongoid::Document
   field :state, type: String
-  field :date, type: Time
+  field :date, type: Date
+  field :hour, type: String
   field :home_goals, type: Integer
   field :away_goals, type: Integer
   field :points_recolected, type: Mongoid::Boolean, default: false

@@ -55,14 +55,39 @@ function parseSchedule(scheduleField, hasGoals){
   const scheduleSplited = scheduleField.split('►')[0].trim().split(' ')
   const index = hasGoals ? 0 : 1
   const length = scheduleSplited.length
-  const dateUndefined = scheduleField.includes("Pospuesto")
+  const dateUndefined = scheduleField.includes("Pospuesto") || scheduleField.includes("Suspendido")
   const hourUndefined = scheduleField.includes("Por definirse")
+  const unparsedDate = hourUndefined ? scheduleSplited[0]  : scheduleSplited[length-index-1]
 
   return {
-      dayOfWeek: hasGoals && length===3 ? scheduleSplited[1] : null,
-      date: dateUndefined? null : hourUndefined ? scheduleSplited[0] : scheduleSplited[length-index-1],
-      hour: hasGoals || hourUndefined || dateUndefined ? null : scheduleSplited[2]
+    date: dateUndefined? null : parseDate(unparsedDate),
+    hour: hasGoals || hourUndefined || dateUndefined ? null : scheduleSplited[length-1]
+  }
+}
+
+function parseDate(unparsedDate){
+
+  const today = new Date
+  const slashCount = (unparsedDate.match(new RegExp('/', 'g')) || []).length
+  var parsedDate = ''
+
+  if(slashCount){
+    const addYear = slashCount==1? '/'+ today.getFullYear() : ''
+
+    if(slashCount==1)
+      parsedDate = unparsedDate + addYear
+    else {
+      splitedDate = unparsedDate.split('/')
+      parsedDate = splitedDate[0]+'/'+splitedDate[1]+'/20'+splitedDate[2]
     }
+
+  } else {
+    const tomorrow = new Date(today.getTime()+86400*1000)
+    const date = unparsedDate==='Mañana'? today : tomorrow
+    parsedDate = date.getDate() +'/'+ (date.getMonth()+1) +'/'+ date.getFullYear()
+  }
+
+  return parsedDate
 }
 
 module.exports = {
