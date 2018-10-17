@@ -8,7 +8,7 @@ class TournamentsController < ApplicationController
         country: t.country,
         img: t.img,
         # number_of_teams: t.teams.count,
-        number_of_stages: t.stages.count
+        current_stage: t.stages.where(is_current: true).first.name
       }
     end
 
@@ -23,7 +23,7 @@ class TournamentsController < ApplicationController
       name: tournament.name,
       country: tournament.country,
       # number_of_teams: t.teams.count,
-      stages_count: tournament.stages.count
+      current_stage: tournament.stages.where(is_current: true).first.name
     }
   end
 
@@ -40,8 +40,14 @@ class TournamentsController < ApplicationController
     Tournament.find( tournament_id ).stages
   end
 
+  def states
+    tournament = Tournament.find(params[:id])
+    render :json => tournament.stages.map{ |s| s.finished }
+  end
+
   def get_matches_data matches
     matches.map do |match| {
+      id: match.id.to_s,
       home: get_team_data(match.home, match.home_goals),
       away: get_team_data(match.away, match.away_goals),
       date: match.date,
@@ -62,6 +68,10 @@ class TournamentsController < ApplicationController
   def stage
     stage = get_stages(params[:id])[params[:stage_number].to_i-1]
     render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
+  end
+
+  def tournament_params
+    params.permit(:id, :stage_number)
   end
 
 end

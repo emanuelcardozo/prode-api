@@ -2,7 +2,9 @@
 
 <p>
   <strong>Name:</strong>
-  <%= @bet.name %>
+  <td><%= @bet.user.facebook_id %></td>
+  <td>Home: <%= @bet.match.home.name %> <%= @bet.home_goals %></td>
+  <td>Away: <%= @bet.match.away.name %> <%= @bet.away_goals %></td>
 </p>
 
 <%= link_to 'Edit', edit_bet_path(@bet) %> |
