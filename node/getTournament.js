@@ -16,27 +16,46 @@ puppeteer.launch({ headless: true }).then(async browser => {
   await matchesButton.click()
   await utils.timeout(1000)
 
-  var stagesName = await getStagesName(page)
-  const lastStageToLoad = utils.getNumberOfStage(stagesName[0], 'last')
-  var lastStageLoaded = utils.getNumberOfStage(stagesName[stagesName.length-1], 'current')
-  var firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
+  // var stagesName = await getStagesName(page)
+  // const lastStageToLoad = utils.getNumberOfStage(stagesName[0], 'last')
+  // var lastStageLoaded = utils.getNumberOfStage(stagesName[stagesName.length-1], 'current')
+  // var firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
+  //
+  //
+  // while( firstStageLoaded > 1){
+  //   await utils.scrollTo(page, 0)
+  //   await utils.timeout(1000)
+  //   stagesName = await getStagesName(page)
+  //   firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
+  // }
+  //
+  // while( lastStageLoaded < lastStageToLoad ){
+  //   await utils.scrollToEnd(page)
+  //   await utils.timeout(1000)
+  //   stagesName = await getStagesName(page)
+  //   lastStageLoaded = utils.getNumberOfStage(stagesName[stagesName.length-1], 'current')
+  // }
+  //
+  // await utils.scrollToEnd(page) // por las dudas de que no carguen todos los partidos
 
+  const beforeScrollImgPath = './beforeScroll.png'
+  const afterScrollImgPath = './afterScroll.png'
 
-  while( firstStageLoaded > 1){
-    await utils.scrollTo(page, 0)
-    await utils.timeout(1000)
-    stagesName = await getStagesName(page)
-    firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
-  }
-
-  while( lastStageLoaded < lastStageToLoad ){
+  do {
+    await page.screenshot({path: beforeScrollImgPath })
     await utils.scrollToEnd(page)
     await utils.timeout(1000)
-    stagesName = await getStagesName(page)
-    lastStageLoaded = utils.getNumberOfStage(stagesName[stagesName.length-1], 'current')
-  }
+    await page.screenshot({path: afterScrollImgPath })
+  } while(await utils.areDifferentImages(beforeScrollImgPath, afterScrollImgPath))
 
-  await utils.scrollToEnd(page) // por las dudas de que no carguen todos los partidos
+  do {
+    await page.screenshot({path: beforeScrollImgPath })
+    await utils.scrollTo(page, 0)
+    await utils.timeout(1000)
+    await page.screenshot({path: afterScrollImgPath })
+  } while(await utils.areDifferentImages(beforeScrollImgPath, afterScrollImgPath))
+
+  // await utils.areDifferentImages(beforeScrollImgPath, afterScrollImgPath)
 
   const unParsedTournament = await getTournament(page)
 
