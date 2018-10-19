@@ -15,7 +15,7 @@ function parseStage( fields ){
   for(let j=1; j<fields.length; j+=3){
 
     let _match = {}
-    let hasGoals = fields[j].includes('Fin') || fields[j].includes('Suspendido')
+    let hasGoals = fields[j].includes('Fin') || fields[j].includes('Suspendido') || fields[j].includes('En vivo') || fields[j].includes('Entretiempo')
     let homeField = fields[j+1]
     let awayField = fields[j+2]
 
@@ -30,7 +30,7 @@ function parseStage( fields ){
           name: awayField.slice(awayField.indexOf(' ')+1),
           goals: parseInt(awayField.split(' ')[0])
         },
-        state: fields[j].includes('Fin')? 'Finished' : 'Suspended'
+        state: fields[j].includes('Fin')? 'Finished' : fields[j].includes('Suspended')? 'Suspended' : 'Playing'
       }
     } else {
       _match={
@@ -83,7 +83,7 @@ function parseDate(unparsedDate){
 
   } else {
     const tomorrow = new Date(today.getTime()+86400*1000)
-    const date = unparsedDate==='Mañana'? today : tomorrow
+    const date = unparsedDate==='Mañana'? tomorrow : today
     parsedDate = date.getDate() +'/'+ (date.getMonth()+1) +'/'+ date.getFullYear()
   }
 
