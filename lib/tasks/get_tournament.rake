@@ -3,7 +3,7 @@ task :get_tournament => :environment do
   file_path = 'node/super_liga.json'
 
   tournament = JSON.parse(File.read(file_path))
-  File.delete(file_path)
+  # File.delete(file_path)
   new_tournament = Tournament.find_or_create_by(name: tournament["name"])
 
   new_tournament.save

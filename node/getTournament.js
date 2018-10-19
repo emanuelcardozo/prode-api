@@ -28,6 +28,9 @@ puppeteer.launch({ headless: true }).then(async browser => {
     stagesName = await getStagesName(page)
     firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
   }
+  
+  await utils.scrollTo(page, 0)
+  await utils.timeout(1000)
 
   await utils.scrollTo(page, 0)
   await utils.timeout(1000)

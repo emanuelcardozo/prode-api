@@ -1,0 +1,1 @@
+Rails.application.config.secret_token = 'e0a17e71b13571a7cad9dae94679b1978f4f286145f4435ba677708a8baf5191e9327f1e4dd9cc73e576af0b1079c12fa644a94cd3d73ab8c76c745eea64fad7'
