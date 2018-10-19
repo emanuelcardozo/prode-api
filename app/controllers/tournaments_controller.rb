@@ -50,7 +50,7 @@ class TournamentsController < ApplicationController
       id: match.id.to_s,
       home: get_team_data(match.home, match.home_goals),
       away: get_team_data(match.away, match.away_goals),
-      date: match.date.strftime("%d/%m/%y"),
+      date: (match.date.strftime("%d/%m/%y") if match.date),
       hour: match.hour,
       state: match.state }
     end
