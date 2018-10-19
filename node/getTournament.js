@@ -29,6 +29,9 @@ puppeteer.launch({ headless: true }).then(async browser => {
     firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
   }
 
+  await utils.scrollTo(page, 0)
+  await utils.timeout(1000)
+
   while( lastStageLoaded < lastStageToLoad ){
     await utils.scrollToEnd(page)
     await utils.timeout(1000)
@@ -41,8 +44,11 @@ puppeteer.launch({ headless: true }).then(async browser => {
   const unParsedTournament = await getTournament(page)
 
   unParsedTournament.stages.forEach( (stage, index)=>{
-      if(!stage[0].includes('Jornada'))
+      if(!stage[0].includes('Jornada')){
+        while(!unParsedTournament.stages[index-1][0].includes('Jornada'))
+          index--
         unParsedTournament.stages[index-1].push(...stage)
+      }
   })
 
   let tournament = {
