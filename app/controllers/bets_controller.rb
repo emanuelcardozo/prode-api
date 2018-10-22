@@ -5,7 +5,13 @@ class BetsController < ApplicationController
   # POST /bets.json
   def create
     params = bet_params
-    @bet = Bet.find_or_initialize_by(match_id: params[:match_id], user: User.where(facebook_id: params[:user_id]).first)
+    match = Match.find(params[:match_id])
+    unless match.state === "Pending"
+      render :json => "Predicción rechazada: El partido no está disponible.", :status => 400
+      return
+    end
+
+    @bet = Bet.find_or_initialize_by(match_id: match.id, user: User.find_by(facebook_id: params[:user_id]))
     @bet.update(home_goals: params[:home_goals], away_goals: params[:away_goals])
 
     respond_to do |format|
