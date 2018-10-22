@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   get 'teams', to: 'teams#index'
   get 'teams/:id', to: 'teams#show'
 
+  get 'sign_in', to: 'users#register'
+
   get 'tournaments', to: 'tournaments#index'
   get 'tournaments/:id', to: 'tournaments#show'
   get 'tournaments/:id/teams', to: 'tournaments#teams'
