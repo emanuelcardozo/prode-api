@@ -46,10 +46,14 @@ class TournamentsController < ApplicationController
   end
 
   def get_matches_data matches
-    matches.map do |match| {
-      id: match.id.to_s,
+    user = User.find_by(token: params[:accessToken])
+    matches.map do |match|
+      bet = match.bets.where(user_id: user.id).first
+      {id: match.id.to_s,
       home: get_team_data(match.home, match.home_goals),
       away: get_team_data(match.away, match.away_goals),
+      bet_home: bet ? bet.home_goals : nil,
+      bet_away: bet ? bet.away_goals : nil,
       date: (match.date.strftime("%d/%m/%y") if match.date),
       hour: match.hour,
       state: match.state }
