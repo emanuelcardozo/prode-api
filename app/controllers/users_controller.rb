@@ -13,13 +13,16 @@ class UsersController < ApplicationController
       return
     end
 
-    User.find_or_create_by(facebook_id: parsed_response["data"]["user_id"]) do |user|
-      user.token= params[:accessToken],
-      user.name= params[:name],
-      user.email= params[:email]
+    user = User.find_or_create_by(facebook_id: parsed_response["data"]["user_id"])
+
+    if !user.name
+      user.update!( name: params[:name],
+                    email: params[:email],
+                    picture: params[:picture][:data][:url],
+                    token: token)
     end
 
-    render :json => "ok"
+    render :json => user
   end
 
   private
