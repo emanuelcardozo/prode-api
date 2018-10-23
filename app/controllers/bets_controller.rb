@@ -6,7 +6,7 @@ class BetsController < ApplicationController
   def create
     params = bet_params
     match = Match.find(params[:match_id])
-    unless match.state === "Pending"
+    if match.state === "Finished"
       render :json => "Predicción rechazada: El partido no está disponible.", :status => 400
       return
     end
