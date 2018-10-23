@@ -20,6 +20,8 @@ Rails.application.routes.draw do
   get 'tournaments/:id/points', to: 'points#tournament_points'
   get 'tournaments/:id/stages/:stage_number/points', to: 'points#stage_points'
 
+  get 'bets_of_match', to: 'bets#bets_of_match'
+
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
