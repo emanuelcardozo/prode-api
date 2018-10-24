@@ -25,14 +25,15 @@ class BetsController < ApplicationController
 
   def bets_of_match
     tournament = Tournamet.find(params[:tournament_id])
-    bets = tournament.stages[params[:stage]].matches.find(params[:match_id])
-    render :json => bets.map do |bet|
+    match = tournament.stages[params[:stage].to_i-1].matches.find(params[:match_id])
+    bets = match.bets.map do |bet|
       {
         home_goals: bet.home_goals,
         away_goals: bet.away_goals,
         user_name: bet.user.name
       }
     end
+    render :json => bets
   end
 
   private

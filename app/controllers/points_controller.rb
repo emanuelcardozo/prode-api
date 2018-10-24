@@ -21,6 +21,8 @@ class PointsController < ApplicationController
     render :json => all_stage_points.sort_by{|user| -user[:points]}
   end
 
+  private
+
   def users_tournament_points(id)
     Point.where(tournament_id: id).to_a
   end
