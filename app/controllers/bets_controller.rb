@@ -38,8 +38,7 @@ class BetsController < ApplicationController
 
   private
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def bet_params
-      params.permit(:home_goals, :away_goals, :user_id, :match_id)
-    end
+  def bet_params
+    params.permit(:home_goals, :away_goals, :user_id, :match_id)
+  end
 end

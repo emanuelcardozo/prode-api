@@ -1,6 +1,4 @@
 class TournamentsController < ApplicationController
-  before_action :current_user, except: [:index, :states]
-
   def index
     tournaments = Tournament.all.to_a.map do |t|
       {
@@ -42,16 +40,16 @@ class TournamentsController < ApplicationController
     render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
   end
 
-  def get_stages tournament_id
-    Tournament.find( tournament_id ).stages
-  end
-
   def states
     tournament = Tournament.find(params[:id])
     render :json => tournament.stages.map{ |s| s.finished }
   end
 
   private
+
+  def get_stages tournament_id
+    Tournament.find( tournament_id ).stages
+  end
 
   def get_matches_data matches
     matches.map do |match|

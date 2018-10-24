@@ -2,6 +2,7 @@ require "uri"
 require "net/http"
 
 class UsersController < ApplicationController
+  skip_before_action :authorize
 
   def register
     token = params[:accessToken]
@@ -14,14 +15,8 @@ class UsersController < ApplicationController
     end
 
     user = User.find_or_create_by(facebook_id: parsed_response["data"]["user_id"])
-    user.update!( name: params[:name], email: params[:email], picture: params[:picture][:data][:url], token: token)
+    user.update!(name: params[:name], email: params[:email], token: token)
 
     render :json => user
-  end
-
-  private
-
-  def users_params
-    params.permit(:accessToken, :userID, :name, :email)
   end
 end
