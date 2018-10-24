@@ -1,5 +1,4 @@
 class TournamentsController < ApplicationController
-
   def index
     tournaments = Tournament.all.to_a.map do |t|
       {
@@ -36,8 +35,9 @@ class TournamentsController < ApplicationController
     render :json => stages.map{ |s| { name: s.name, matches: get_matches_data(s.matches) }}
   end
 
-  def get_stages tournament_id
-    Tournament.find( tournament_id ).stages
+  def stage
+    stage = get_stages(params[:id])[params[:stage_number].to_i-1]
+    render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
   end
 
   def states
@@ -45,11 +45,20 @@ class TournamentsController < ApplicationController
     render :json => tournament.stages.map{ |s| s.finished }
   end
 
+  private
+
+  def get_stages tournament_id
+    Tournament.find( tournament_id ).stages
+  end
+
   def get_matches_data matches
-    matches.map do |match| {
-      id: match.id.to_s,
+    matches.map do |match|
+      bet = match.bets.where(user_id: @current_user.id).first
+      {id: match.id.to_s,
       home: get_team_data(match.home, match.home_goals),
       away: get_team_data(match.away, match.away_goals),
+      bet_home: bet ? bet.home_goals : nil,
+      bet_away: bet ? bet.away_goals : nil,
       date: (match.date.strftime("%d/%m/%y") if match.date),
       hour: match.hour,
       state: match.state }
@@ -64,11 +73,6 @@ class TournamentsController < ApplicationController
         large: team.logo["large"]
       },
       goals: goals }
-  end
-
-  def stage
-    stage = get_stages(params[:id])[params[:stage_number].to_i-1]
-    render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
   end
 
   def tournament_params

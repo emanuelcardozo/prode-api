@@ -6,7 +6,7 @@ class BetsController < ApplicationController
   def create
     params = bet_params
     match = Match.find(params[:match_id])
-    unless match.state === "Pending"
+    if match.state === "Finished"
       render :json => "Predicción rechazada: El partido no está disponible.", :status => 400
       return
     end
@@ -23,10 +23,22 @@ class BetsController < ApplicationController
     end
   end
 
+  def bets_of_match
+    tournament = Tournamet.find(params[:tournament_id])
+    match = tournament.stages[params[:stage].to_i-1].matches.find(params[:match_id])
+    bets = match.bets.map do |bet|
+      {
+        home_goals: bet.home_goals,
+        away_goals: bet.away_goals,
+        user_name: bet.user.name
+      }
+    end
+    render :json => bets
+  end
+
   private
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def bet_params
-      params.permit(:home_goals, :away_goals, :user_id, :match_id)
-    end
+  def bet_params
+    params.permit(:home_goals, :away_goals, :user_id, :match_id)
+  end
 end
