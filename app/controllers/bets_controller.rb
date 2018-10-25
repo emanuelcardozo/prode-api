@@ -24,7 +24,7 @@ class BetsController < ApplicationController
   end
 
   def bets_of_match
-    tournament = Tournamet.find(params[:tournament_id])
+    tournament = Tournament.find(params[:tournament_id])
     match = tournament.stages[params[:stage].to_i-1].matches.find(params[:match_id])
     bets = match.bets.map do |bet|
       {
