@@ -3,9 +3,9 @@ const parser = require('./parser')
 const utils = require('./utils')
 const fs = require('fs')
 
-const url = 'https://www.google.com.ar/search?q=liga+argetina'
+const url = 'https://www.google.com.mx/search?q=liga+argetina'
 
-puppeteer.launch({ headless: true }).then(async browser => {
+puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
   console.log("\n################ GETTING TOURNAMENT ################\n")
 
   const page = await browser.newPage()
@@ -14,7 +14,7 @@ puppeteer.launch({ headless: true }).then(async browser => {
 
   const matchesButton = await page.$('g-immersive-footer')
   await matchesButton.click()
-  await utils.timeout(1000)
+  await utils.timeout(5000)
 
   var stagesName = await getStagesName(page)
   const lastStageToLoad = utils.getNumberOfStage(stagesName[0], 'last')
@@ -24,28 +24,29 @@ puppeteer.launch({ headless: true }).then(async browser => {
 
   while( firstStageLoaded > 1){
     await utils.scrollTo(page, 0)
-    await utils.timeout(1000)
+    await utils.timeout(5000)
     stagesName = await getStagesName(page)
     firstStageLoaded = utils.getNumberOfStage(stagesName[0], 'current')
   }
 
   await utils.scrollTo(page, 0)
-  await utils.timeout(1000)
+  await utils.timeout(5000)
 
   while( lastStageLoaded < lastStageToLoad ){
     await utils.scrollToEnd(page)
-    await utils.timeout(1000)
+    await utils.timeout(5000)
     stagesName = await getStagesName(page)
     lastStageLoaded = utils.getNumberOfStage(stagesName[stagesName.length-1], 'current')
   }
 
   await utils.scrollToEnd(page) // por las dudas de que no carguen todos los partidos
+  await utils.timeout(5000)
 
   const unParsedTournament = await getTournament(page)
 
   unParsedTournament.stages.forEach( (stage, index)=>{
-      if(!stage[0].includes('Jornada')){
-        while(!unParsedTournament.stages[index-1][0].includes('Jornada'))
+      if(!stage[0].includes('Jornada') && !stage[0].includes('Matchday')){
+        while(!unParsedTournament.stages[index-1][0].includes('Jornada') && !unParsedTournament.stages[index-1][0].includes('Matchday'))
           index--
         unParsedTournament.stages[index-1].push(...stage)
       }
@@ -53,7 +54,7 @@ puppeteer.launch({ headless: true }).then(async browser => {
 
   let tournament = {
     name: unParsedTournament.name,
-    stages: parser.parseStages( unParsedTournament.stages.filter( el => el[0].includes('Jornada') ) )
+    stages: parser.parseStages( unParsedTournament.stages.filter( el => el[0].includes('Jornada') || el[0].includes('Matchday') ) )
   }
   console.log(tournament);
 

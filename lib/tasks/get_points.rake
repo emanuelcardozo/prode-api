@@ -9,8 +9,8 @@ desc 'Getting all points obteined for each user'
 
       guessed_home_goals = h_goals === bet.home_goals ? 1 : 0
       guessed_away_goals = a_goals === bet.away_goals ? 1 : 0
-      guessed_winner = h_goals > a_goals && bet.home_goals > bet.away_goals || h_goals < a_goals && bet.home_goals < bet.away_goals ||
-                       h_goals = a_goals && bet.home_goals = bet.away_goals ? 1 : 0
+      guessed_winner = (h_goals > a_goals && bet.home_goals > bet.away_goals) || (h_goals < a_goals && bet.home_goals < bet.away_goals) ||
+                       (h_goals === a_goals && bet.home_goals === bet.away_goals) ? 1 : 0
       # guessed_result = (guessed_away_goals & guessed_home_goals) != 0 ? 1 : 0
 
       score = guessed_result + guessed_away_goals + guessed_home_goals
