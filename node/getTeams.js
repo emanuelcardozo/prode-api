@@ -6,7 +6,7 @@ const fs = require('fs')
 const url = 'https://www.google.com.ar/search?q=posiciones+super_liga+argetina'
 // const leagues = ['liga española', 'superliga argentina', 'premier league']
 
-puppeteer.launch({ headless: true }).then(async browser => {
+puppeteer.launch({ headless: true, args: ['--no-sandbox', '--disable-setuid-sandbox'] }).then(async browser => {
   console.log("\n################ GETTING TEAMS ################\n")
 
   const page = await browser.newPage()
@@ -15,7 +15,7 @@ puppeteer.launch({ headless: true }).then(async browser => {
 
   const matchesButton = await page.$('g-immersive-footer')
   await matchesButton.click()
-  await utils.timeout(1000)
+  await utils.timeout(5000)
 
   let allTeams = await getTeams(page)
   console.log(allTeams);
