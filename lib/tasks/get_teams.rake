@@ -1,11 +1,15 @@
 require 'fileutils'
+require 'net/http'
 
 desc 'Getting all teams from the typed league'
-task :get_teams => :environment do
-  file_path = 'node/teams.json'
-  sh %{ node ./node/getTeams.js }
-  teams = JSON.parse(File.read(file_path))
-  File.delete(file_path)
+task :get_teams, [:zone] => :environment do |task, args|
+
+  url = URI.parse('http://localhost:3002/teams?country='+ (args[:zone] || 'argentina'))
+  req = Net::HTTP::Get.new(url.to_s)
+  res = Net::HTTP.start(url.host, url.port) {|http|
+    http.request(req)
+  }
+  teams = JSON.parse(res.body)
   teams.each do |team|
     new_team = Team.find_or_initialize_by(
       name: team["name"],

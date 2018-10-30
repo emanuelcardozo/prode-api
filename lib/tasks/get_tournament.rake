@@ -1,9 +1,15 @@
-task :get_tournament => :environment do
-  sh %{ node ./node/getTournament.js }
-  file_path = 'node/super_liga.json'
+task :get_tournament, [:zone, :with_teams] => :environment do |task, args|
 
-  tournament = JSON.parse(File.read(file_path))
-  File.delete(file_path)
+  args.with_defaults(:zone => 'argentina', :with_teams => false)
+
+  Rake::Task["get_teams"].invoke(args[:zone]) if args[:with_teams]
+
+  url = URI.parse('http://localhost:3002/tournament?country='+args[:zone])
+  req = Net::HTTP::Get.new(url.to_s)
+  res = Net::HTTP.start(url.host, url.port) {|http|
+    http.request(req)
+  }
+  tournament = JSON.parse(res.body)
   new_tournament = Tournament.find_or_create_by(name: tournament["name"])
 
   new_tournament.save
