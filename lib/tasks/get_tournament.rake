@@ -4,9 +4,9 @@ task :get_tournament, [:zone, :with_teams] => :environment do |task, args|
 
   Rake::Task["get_teams"].invoke(args[:zone]) if args[:with_teams]
 
-  url = URI.parse('http://localhost:3002/tournament?country='+args[:zone])
+  url = URI.parse( Rails.application.config.scrapper_url + '/tournament?country=' + args[:zone])
   req = Net::HTTP::Get.new(url.to_s)
-  res = Net::HTTP.start(url.host, url.port) {|http|
+  res = Net::HTTP.start(url.host, url.port, :use_ssl => url.scheme == 'https') {|http|
     http.request(req)
   }
   tournament = JSON.parse(res.body)
