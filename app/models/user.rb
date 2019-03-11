@@ -5,6 +5,7 @@ class User
   field :email, type: String
   field :token, type: String
   field :picture, type: String
+  field :alias, type: String, default: ""
 
   has_many :bets
   has_many :points

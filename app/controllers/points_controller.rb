@@ -16,6 +16,7 @@ class PointsController < ApplicationController
       {
         user_facebook_id: user_tournament_points.user.facebook_id,
         name: user_tournament_points.user.name,
+        alias: user_tournament_points.user.alias,
         points: get_user_stage_points(user_tournament_points, params[:stage_number].to_i)
       }
     end
