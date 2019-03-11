@@ -3,6 +3,7 @@ require "net/http"
 
 class UsersController < ApplicationController
   skip_before_action :authorize
+  skip_before_action :verify_authenticity_token
 
   def register
     token = params[:accessToken]
@@ -18,5 +19,18 @@ class UsersController < ApplicationController
     user.update!(name: params[:name], email: params[:email], token: token)
 
     render :json => user
+  end
+
+  def change_alias
+    user = User.find_by(facebook_id: params[:user_id])
+    user.update(alias: params[:alias])
+
+    respond_to do |format|
+      if user.save
+        format.json { render json: user, status: :ok }
+      else
+        format.json { render json: {} , status: :unprocessable_entity }
+      end
+    end
   end
 end

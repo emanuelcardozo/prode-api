@@ -22,6 +22,6 @@ Rails.application.routes.draw do
 
   get 'bets_of_match', to: 'bets#bets_of_match'
 
-
+  post 'alias', to: 'users#change_alias'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

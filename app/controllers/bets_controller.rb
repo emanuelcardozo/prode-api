@@ -30,7 +30,8 @@ class BetsController < ApplicationController
       {
         home_goals: bet.home_goals,
         away_goals: bet.away_goals,
-        user_name: bet.user.name
+        user_name: bet.user.name,
+        user_alias: bet.user.alias
       }
     end
     render :json => bets
