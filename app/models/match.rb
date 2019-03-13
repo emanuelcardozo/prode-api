@@ -1,6 +1,6 @@
 class Match
   include Mongoid::Document
-  field :state, type: String
+  field :state, type: String, default: 'Pending'
   field :date, type: Date
   field :hour, type: String
   field :home_goals, type: Integer

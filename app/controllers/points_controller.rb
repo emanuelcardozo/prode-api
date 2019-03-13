@@ -23,6 +23,18 @@ class PointsController < ApplicationController
     render :json => all_stage_points.sort_by{|user| -user[:points]}
   end
 
+  def main_match_points
+    all_points = Point.where(main_match_id: params[:id]).to_a.map do | user_match_points |
+      {
+        user_facebook_id: user_match_points.user.facebook_id,
+        name: user_match_points.user.name,
+        alias: user_match_points.user.alias,
+        points: user_match_points.total
+      }
+    end
+    render :json => all_points.sort_by{ |user| -user[:points]}
+  end
+
   private
 
   def users_tournament_points(id)
