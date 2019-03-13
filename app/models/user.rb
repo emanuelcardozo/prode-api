@@ -8,5 +8,6 @@ class User
   field :alias, type: String, default: ""
 
   has_many :bets
+  has_many :bet_matchs
   has_many :points
 end

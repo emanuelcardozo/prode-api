@@ -52,7 +52,7 @@ class TournamentsController < ApplicationController
   end
 
   def get_matches_data matches
-    matches.map do |match|
+    matches.where(:_type.ne => "MainMatch").all.to_a.map do |match|
 
       bet = match.bets.where(user_id: @current_user.id).first
       match_points = @current_user.points.first.history.select{|p| p[:match_id] === match.id}.first[:points] if match.points_recolected
