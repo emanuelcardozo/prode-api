@@ -6,19 +6,25 @@ class BetsController < ApplicationController
   def create
     params = bet_params
     match = Match.find(params[:match_id])
-    if match.state === "Finished"
-      render :json => "Predicción rechazada: El partido no está disponible.", :status => 400
-      return
-    end
+    user = User.find_by(facebook_id: params[:user_id])
+    if user.is_admin
+      match.update(home_goals: params[:home_goals], away_goals: params[:away_goals], state: "Finished")
+      render :json => "Partido actializado", :status => :ok
+    else
+      if match.state === "Finished" || deadline(match.date, match.hour)
+        render :json => "Predicción rechazada: El partido no está disponible.", :status => 400
+        return
+      end
 
-    @bet = Bet.find_or_initialize_by(match_id: match.id, user: User.find_by(facebook_id: params[:user_id]))
-    @bet.update(home_goals: params[:home_goals], away_goals: params[:away_goals])
+      @bet = Bet.find_or_initialize_by(match_id: match.id, user: User.find_by(facebook_id: params[:user_id]))
+      @bet.update(home_goals: params[:home_goals], away_goals: params[:away_goals])
 
-    respond_to do |format|
-      if @bet.save
-        format.json { render json: @bet, status: :ok }
-      else
-        format.json { render json: {} , status: :unprocessable_entity }
+      respond_to do |format|
+        if @bet.save
+          format.json { render json: @bet, status: :ok }
+        else
+          format.json { render json: {} , status: :unprocessable_entity }
+        end
       end
     end
   end
@@ -41,5 +47,19 @@ class BetsController < ApplicationController
 
   def bet_params
     params.permit(:home_goals, :away_goals, :user_id, :match_id)
+  end
+
+  def deadline date, hour
+    dl = DateTime.now
+    dl_hour = format('%02d', dl.hour)
+    dl_min = format('%02d', dl.minute - 1)
+
+    if date > Date.today
+      return false
+    elsif hour > (dl_hour + ":" + (dl_min == "-1" ? "59" : dl_min))
+      return false
+    else
+      return true
+    end
   end
 end

@@ -6,6 +6,7 @@ class User
   field :token, type: String
   field :picture, type: String
   field :alias, type: String, default: ""
+  field :is_admin, type:  Mongoid::Boolean, default: false
 
   has_many :bets
   has_many :bet_matchs
