@@ -53,9 +53,12 @@ class TournamentsController < ApplicationController
 
   def get_matches_data matches
     matches.where(:_type.ne => "MainMatch").all.to_a.map do |match|
+      match_points = []
+      points = @current_user.points
 
       bet = match.bets.where(user_id: @current_user.id).first
-      match_points = @current_user.points.first.history.select{|p| p[:match_id] === match.id}.first[:points] if match.points_recolected
+      match_points = @current_user.points.first.history.select{|p| p[:match_id] === match.id} if match.points_recolected && !@current_user.is_admin && points.any?
+      match_points = match_points.first[:points] if match_points.any?
 
       {
         id: match.id.to_s,

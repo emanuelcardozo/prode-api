@@ -17,6 +17,7 @@ class PointsController < ApplicationController
         user_facebook_id: user_tournament_points.user.facebook_id,
         name: user_tournament_points.user.name,
         alias: user_tournament_points.user.alias,
+        facebook_id: user_tournament_points.user.facebook_id,
         points: get_user_stage_points(user_tournament_points, params[:stage_number].to_i)
       }
     end
@@ -26,7 +27,7 @@ class PointsController < ApplicationController
   def main_match_points
     all_points = Point.where(main_match_id: params[:id]).to_a.map do | user_match_points |
       {
-        user_facebook_id: user_match_points.user.facebook_id,
+        facebook_id: user_match_points.user.facebook_id,
         name: user_match_points.user.name,
         alias: user_match_points.user.alias,
         points: user_match_points.total
