@@ -35,11 +35,11 @@ class BetMatchesController < ApplicationController
   def deadline date, hour
     dl = DateTime.now
     dl_hour = format('%02d', dl.hour)
-    dl_min = format('%02d', dl.minute - 1)
+    dl_min = format('%02d', dl.minute + 1)
 
     if date > Date.today
       return false
-    elsif hour > (dl_hour + ":" + (dl_min == "-1" ? "59" : dl_min))
+    elsif hour > (dl_hour + ":" + (dl_min == "60" ? "00" : dl_min))
       return false
     else
       return true
