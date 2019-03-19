@@ -57,7 +57,7 @@ class BetsController < ApplicationController
 
     if date > Date.today
       return false
-    elsif hour > (dl_hour + ":" + (dl_min == "60" ? "00" : dl_min))
+    elsif date == Date.today && hour > (dl_hour + ":" + (dl_min == "60" ? "00" : dl_min))
       return false
     else
       return true
