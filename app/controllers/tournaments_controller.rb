@@ -5,9 +5,8 @@ class TournamentsController < ApplicationController
         id: t.id.to_s,
         name: t.name,
         country: t.country,
-        image: t.image,
-        # number_of_teams: t.teams.count,
-        current_stage: t.stages.where(is_current: true).first.name
+        img: t.img,
+        current_stage: t.stages.where(is_current: true).first ? t.stages.where(is_current: true).first.name : ""
       }
     end
 
@@ -21,8 +20,7 @@ class TournamentsController < ApplicationController
       id: tournament.id.to_s,
       name: tournament.name,
       country: tournament.country,
-      # number_of_teams: t.teams.count,
-      current_stage: tournament.stages.where(is_current: true).first.name
+      current_stage: tournament.stages.where(is_current: true).first ? tournament.stages.where(is_current: true).first.name : ""
     }
   end
 
@@ -36,7 +34,8 @@ class TournamentsController < ApplicationController
   end
 
   def stage
-    stage = get_stages(params[:id])[params[:stage_number].to_i-1]
+    stage = get_stages(params[:id])
+    stage = stage.where(is_current: true).first
     render :json => { name: stage.name, matches: get_matches_data(stage.matches) }
   end
 
