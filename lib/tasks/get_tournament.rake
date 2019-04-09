@@ -21,7 +21,7 @@ task :get_tournament, [:zone, :with_teams] => :environment do |task, args|
     new_stage = Stage.find_or_create_by(
       name: stage["name"],
       number_of_stage: index+1,
-      tournament_id: new_tournament.id,
+      tournament_id: new_tournament.id
     )
     new_stage.is_current = stage_status.include?('Pending')
     new_stage.finished = stage_status.length === 1 && stage_status.include?('Finished')
