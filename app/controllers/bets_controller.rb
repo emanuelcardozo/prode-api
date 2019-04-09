@@ -31,7 +31,7 @@ class BetsController < ApplicationController
 
   def bets_of_match
     tournament = Tournament.find(params[:tournament_id])
-    match = tournament.stages[params[:stage].to_i-1].matches.find(params[:match_id])
+    match = tournament.stages.where(is_current: true).first.matches.find(params[:match_id])
     bets = match.bets.map do |bet|
       {
         home_goals: bet.home_goals,
