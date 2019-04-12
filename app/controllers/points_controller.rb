@@ -18,7 +18,7 @@ class PointsController < ApplicationController
         name: user_tournament_points.user.name,
         alias: user_tournament_points.user.alias,
         facebook_id: user_tournament_points.user.facebook_id,
-        points: get_user_stage_points(user_tournament_points, params[:stage_number].to_i)
+        points: get_user_stage_points(user_tournament_points, Stage.where(is_current: true).first.number_of_stage)
       }
     end
     render :json => all_stage_points.sort_by{|user| -user[:points]}
