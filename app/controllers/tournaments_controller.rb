@@ -51,7 +51,7 @@ class TournamentsController < ApplicationController
   end
 
   def get_matches_data matches
-    matches.where(:_type.ne => "MainMatch").all.to_a.map do |match|
+    matches.where(:_type.ne => "MainMatch").to_a.map do |match|
       match_points = []
       points = @current_user.points
 
