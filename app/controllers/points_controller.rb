@@ -12,26 +12,53 @@ class PointsController < ApplicationController
   end
 
   def stage_points
-    all_stage_points = users_tournament_points(params[:id]).map do |user_tournament_points|
-      {
-        user_facebook_id: user_tournament_points.user.facebook_id,
-        name: user_tournament_points.user.name,
-        alias: user_tournament_points.user.alias,
-        facebook_id: user_tournament_points.user.facebook_id,
-        points: get_user_stage_points(user_tournament_points, Stage.where(is_current: true).first.number_of_stage)
-      }
+    users = users_tournament_points(params[:id])
+    if users.empty?
+      users = User.where(:is_admin.ne => true).to_a
+      all_stage_points = users.map do |user_tournament_points|
+        {
+          user_facebook_id: user_tournament_points.facebook_id,
+          name: user_tournament_points.name,
+          alias: user_tournament_points.alias,
+          facebook_id: user_tournament_points.facebook_id,
+          points: 0
+        }
+      end
+    else
+      all_stage_points = users.map do |user_tournament_points|
+        {
+          user_facebook_id: user_tournament_points.user.facebook_id,
+          name: user_tournament_points.user.name,
+          alias: user_tournament_points.user.alias,
+          facebook_id: user_tournament_points.user.facebook_id,
+          points: get_user_stage_points(user_tournament_points, Stage.where(is_current: true).first.number_of_stage)
+        }
+      end
     end
     render :json => all_stage_points.sort_by{|user| -user[:points]}
   end
 
   def main_match_points
-    all_points = Point.where(main_match_id: params[:id]).to_a.map do | user_match_points |
-      {
-        facebook_id: user_match_points.user.facebook_id,
-        name: user_match_points.user.name,
-        alias: user_match_points.user.alias,
-        points: user_match_points.total
-      }
+    users = Point.where(main_match_id: params[:id]).to_a
+    if users.empty?
+      users = User.where(:is_admin.ne => true).to_a
+      all_points = users.map do | user_match_points |
+        {
+          facebook_id: user_match_points.facebook_id,
+          name: user_match_points.name,
+          alias: user_match_points.alias,
+          points: 0
+        }
+      end
+    else
+      all_points = users.map do | user_match_points |
+        {
+          facebook_id: user_match_points.user.facebook_id,
+          name: user_match_points.user.name,
+          alias: user_match_points.user.alias,
+          points: user_match_points.total
+        }
+      end
     end
     render :json => all_points.sort_by{ |user| -user[:points]}
   end
