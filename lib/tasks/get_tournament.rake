@@ -29,23 +29,22 @@ task :get_tournament, [:zone, :with_teams] => :environment do |task, args|
     new_stage.save
 
     matches.each do | match |
-      date = match["schedule"]["date"]
-
       new_match = Match.find_or_create_by(
         home_id: Team.where(name: match["home"]["name"]).first.id,
         away_id: Team.where(name: match["away"]["name"]).first.id,
         tournament_id: new_tournament.id
       )
 
+      date = match["schedule"]["date"]
+
       new_match.home_goals = match["home"]["goals"]
       new_match.away_goals = match["away"]["goals"]
-      new_match.date = date ? Date.strptime(date, '%d/%m/%Y') : nil
-      new_match.hour = match["schedule"]["hour"]
+      new_match.date = (date ? Date.strptime(date, '%d/%m/%Y') : nil) unless new_match.date
+      new_match.hour = match["schedule"]["hour"] unless new_match.hour
       new_match.state = match["state"]
       new_match.stage_id = new_stage.id
 
       new_match.save
     end
   end
-
 end
