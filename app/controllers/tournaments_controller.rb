@@ -56,7 +56,7 @@ class TournamentsController < ApplicationController
       points = @current_user.points
 
       bet = match.bets.where(user_id: @current_user.id).first
-      match_points = @current_user.points.first.history.select{|p| p[:match_id] === match.id} if match.points_recolected && !@current_user.is_admin && points.any?
+      match_points = @current_user.points.where(tournament_id: match[:tournament_id]).first.history.select{|p| p[:match_id] === match.id} if match.points_recolected && !@current_user.is_admin && points.any?
       match_points = match_points.first[:points] if match_points.any?
 
       {
